@@ -37,6 +37,21 @@
             animation: float 3s ease-in-out infinite;
         }
 
+        .heart.small {
+            font-size: 15px;
+            opacity: 0.5;
+        }
+
+        .heart.medium {
+            font-size: 25px;
+            opacity: 0.7;
+        }
+
+        .heart.large {
+            font-size: 30px;
+            opacity: 0.8;
+        }
+
         @keyframes float {
             0%, 100% {
                 transform: translateY(0) rotate(0deg);
@@ -292,22 +307,36 @@
         const container = document.querySelector('.container');
 
         // Create floating hearts
+        const heartEmojis = ['💕', '💖', '💗', '💓', '💝', '❤️', '🧡', '💛'];
+        
         function createHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.textContent = '💕';
-            heart.style.left = Math.random() * 100 + '%';
-            heart.style.top = Math.random() * 100 + '%';
-            heart.style.animationDelay = Math.random() * 3 + 's';
-            heartsContainer.appendChild(heart);
+            // Create 2-3 hearts at once for more density
+            const numHearts = Math.floor(Math.random() * 2) + 2; // 2 or 3 hearts
+            
+            for (let i = 0; i < numHearts; i++) {
+                const heart = document.createElement('div');
+                const sizeClass = ['small', 'medium', 'large'][Math.floor(Math.random() * 3)];
+                heart.className = `heart ${sizeClass}`;
+                heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.top = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 3 + 's';
+                heart.style.animationDuration = (2 + Math.random() * 2) + 's'; // Vary animation speed
+                heartsContainer.appendChild(heart);
 
-            setTimeout(() => {
-                heart.remove();
-            }, 3000);
+                setTimeout(() => {
+                    heart.remove();
+                }, 4000);
+            }
         }
 
-        // Create hearts periodically
-        setInterval(createHeart, 500);
+        // Create hearts more frequently - every 300ms instead of 500ms
+        setInterval(createHeart, 300);
+        
+        // Create initial batch of hearts
+        for (let i = 0; i < 10; i++) {
+            setTimeout(() => createHeart(), i * 100);
+        }
 
         // Make "No" button run away from cursor (anywhere on the screen)
         document.addEventListener('mousemove', (e) => {
@@ -324,7 +353,7 @@
             );
             
             // If mouse is within 150px of the button, move it away
-            if (distance < 150) {
+            if (distance < 200) {
                 // Switch to fixed positioning when button starts moving
                 if (!noBtn.classList.contains('moving')) {
                     noBtn.classList.add('moving');
